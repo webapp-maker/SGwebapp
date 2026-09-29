@@ -206,6 +206,7 @@ details.ad summary span:last-child{font-size:12px;color:var(--muted)}
       <div class="hp" id="gd-status"></div>
       <div id="gd-inbox" class="hide">
         <label>받은 가이딩 요청</label>
+        <div class="hp">수락하면 센티넬의 과부하가 줄어요. 같은 등급이면 10%, 가이드 등급이 한 단계 높을 때마다 5% 더 줄고, 한 단계 낮을 때마다 5% 덜 줄어요. (최소 0%)</div>
         <div id="gd-list"></div>
       </div>
       <button class="ghost" id="btn-grefresh">새로고침</button>
@@ -447,8 +448,9 @@ details.ad summary span:last-child{font-size:12px;color:var(--muted)}
   }
   async function loadMyRequest(){
     try{
+      refreshOverload();
       var snap = await db.doc("guiding/" + myCode).get(), d = snap.exists ? snap.data() : null;
-      $("gd-status").textContent = d ? "내 요청: " + d.toName + " 가이드 - " + (STLAB[d.status] || d.status) : "";
+      $("gd-status").textContent = d ? "내 요청: " + d.toName + " 가이드 - " + (STLAB[d.status] || d.status) + (d.status === "accepted" && d.reduced !== undefined ? " (과부하 -" + d.reduced + "%)" : "") : "";
     }catch(e){}
   }
   async function loadInbox(){
@@ -464,18 +466,39 @@ details.ad summary span:last-child{font-size:12px;color:var(--muted)}
         var pr = document.createElement("div"); pr.className = "pair";
         var ok = document.createElement("button"); ok.className = "primary"; ok.textContent = "가이딩 해주기";
         var no = document.createElement("button"); no.className = "ghost"; no.textContent = "거절";
-        ok.onclick = function(){ respond(id, "accepted"); };
-        no.onclick = function(){ respond(id, "declined"); };
+        ok.onclick = function(){ respond(id, "accepted", x); };
+        no.onclick = function(){ respond(id, "declined", x); };
         pr.appendChild(ok); pr.appendChild(no); row.appendChild(t); row.appendChild(pr); box.appendChild(row);
       });
     }catch(e){ setMsg($("gd-msg"), "요청 목록을 불러오지 못했어요."); }
   }
-  async function respond(id, st){
+  var GORD = ["S","A","B","C","D"], respBusy = false;
+  function gIdx(g){ var i = GORD.indexOf(g); return i < 0 ? 4 : i; }
+  // 같은 등급 10%, 가이드가 한 단계 높을 때마다 +5%, 낮을 때마다 -5% (최소 0%)
+  function reduceFor(esperGrade, guideGrade){ return Math.max(0, 10 + 5 * (gIdx(esperGrade) - gIdx(guideGrade))); }
+  async function refreshOverload(){
     try{
-      await db.doc("guiding/" + id).update({status:st, respondedAt:Date.now()});
-      setMsg($("gd-msg"), st === "accepted" ? "가이딩을 수락했어요." : "요청을 거절했어요.", true);
+      var s = await db.doc("codes/" + myCode).get(), d = s.exists ? s.data() : null;
+      if(d) myOverload = Math.max(0, Math.min(100, Number(d.overload) || 0));
+    }catch(e){}
+  }
+  async function respond(id, st, x){
+    if(respBusy) return; respBusy = true;
+    try{
+      if(st !== "accepted"){
+        await db.doc("guiding/" + id).update({status:st, respondedAt:Date.now()});
+        setMsg($("gd-msg"), "요청을 거절했어요.", true);
+      }else{
+        var es = await db.doc("codes/" + id).get(), ed = es.exists ? es.data() : null;
+        if(!ed){ setMsg($("gd-msg"), "상대 계정을 찾을 수 없어요."); respBusy = false; loadInbox(); return; }
+        var red = reduceFor(ed.grade, myGrade), before = Math.max(0, Math.min(100, Number(ed.overload) || 0)), after = Math.max(0, before - red);
+        await db.doc("guiding/" + id).update({status:"accepted", reduced:before - after, respondedAt:Date.now()});
+        var ok = "가이딩을 수락했어요. " + (x && x.fromName ? x.fromName + " " : "") + "과부하 " + before + "% → " + after + "%";
+        try{ await db.doc("codes/" + id).update({overload:after}); setMsg($("gd-msg"), ok, true); }
+        catch(e2){ setMsg($("gd-msg"), "수락은 됐지만 과부하를 반영하지 못했어요."); }
+      }
     }catch(e){ setMsg($("gd-msg"), "처리하지 못했어요. 잠시 후 다시 시도해 주세요."); }
-    loadInbox();
+    respBusy = false; loadInbox();
   }
   function fld(form, label, el){ var lb = document.createElement("label"); lb.textContent = label; form.appendChild(lb); form.appendChild(el); return el; }
   function inp(type, val){ var i = document.createElement("input"); i.type = type; i.value = val == null ? "" : val; return i; }
@@ -681,9 +704,9 @@ details.ad summary span:last-child{font-size:12px;color:var(--muted)}
     if(pHp <= 0){ over = true; setTurn("쓰러졌다... 패배 (탭을 다시 열면 새 게이트가 나와요)"); enable(false); return true; }
     return false;
   }
-  function playerAct(){
+  async function playerAct(){
     if(over || !cur || myRole !== "에스퍼") return;
-    enable(false); setTurn("주사위를 굴리는 중...");
+    enable(false); setTurn("주사위를 굴리는 중..."); await refreshOverload();
     spin(function(v){
       var r = RULE[v];
       if(r.gate) gHp = Math.max(0, gHp - r.gate);
