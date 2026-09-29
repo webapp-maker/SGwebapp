@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>에스퍼 · 가이드</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--text:#1d1f2b;--muted:#6b6f85;--line:#dcdef0;--accent:#5b5fe0;--accent2:#e8e9fb;--err:#d64545;--ok:#1f9d55;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14151f;--card:#1e2030;--text:#eceefb;--muted:#9a9eb8;--line:#33364d;--accent:#8a8dff;--accent2:#2a2d4a;--err:#ff7b7b;--ok:#4cd68a}}
+:root[data-theme="dark"]{--bg:#14151f;--card:#1e2030;--text:#eceefb;--muted:#9a9eb8;--line:#33364d;--accent:#8a8dff;--accent2:#2a2d4a;--err:#ff7b7b;--ok:#4cd68a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 22px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 18px}
+label{display:block;font-size:13px;color:var(--muted);margin:14px 0 6px}
+input[type=text],input[type=number],textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:15px}
+textarea{resize:vertical;min-height:80px}
+input:focus,textarea:focus{outline:2px solid var(--accent);border-color:transparent}
+button{width:100%;padding:13px;border-radius:10px;border:0;font:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:12px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--accent);color:#fff}
+.ghost{background:var(--accent2);color:var(--accent)}
+.link{background:none;color:var(--muted);font-weight:400;font-size:14px;margin-top:6px}
+.divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:18px 0 4px}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:22px;letter-spacing:4px;text-align:center;background:var(--accent2);color:var(--accent);padding:12px;border-radius:10px;font-weight:700}
+.seg{display:flex;gap:8px}
+.seg label{flex:1;margin:0;padding:12px;text-align:center;border:1px solid var(--line);border-radius:10px;cursor:pointer;color:var(--text);font-size:15px}
+.seg input{display:none}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--accent2);color:var(--accent);font-weight:700}
+.msg{font-size:13px;margin-top:10px;min-height:18px;color:var(--err)}
+.msg.ok{color:var(--ok)}
+.hide{display:none}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+.who{font-size:13px;color:var(--muted);line-height:1.4}
+.who b{color:var(--text);font-size:15px}
+.top button{width:auto;padding:8px 12px;font-size:13px;margin:0}
+.tabs{display:flex;gap:6px;background:var(--bg);padding:4px;border-radius:12px;margin-bottom:16px}
+.tabs button{margin:0;padding:10px;background:none;color:var(--muted)}
+.tabs button.on{background:var(--card);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.big{text-align:center;padding:8px 0 4px}
+.big .ico{font-size:52px;line-height:1}
+.big .temp{font-size:44px;font-weight:700;margin-top:6px}
+.big .desc{color:var(--muted);font-size:14px;margin-top:2px}
+.hours{display:flex;gap:8px;overflow-x:auto;padding:12px 0 6px}
+.hr{flex:0 0 auto;min-width:54px;text-align:center;background:var(--bg);border-radius:10px;padding:8px 6px;font-size:13px}
+.hr div:first-child{color:var(--muted);font-size:12px}
+.hr div:nth-child(2){font-size:20px;margin:4px 0}
+.notes{font-size:13px;color:var(--muted);line-height:1.7;margin:10px 0 0;padding-left:18px}
+.stale{font-size:12px;color:var(--err);margin-top:8px}
+.gate{text-align:center}
+.grade{font-size:72px;font-weight:800;line-height:1;margin:6px 0 2px}
+.dc{color:var(--muted);font-size:13px}
+.dice{margin:18px auto 6px;width:84px;height:84px;border-radius:16px;background:var(--accent2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800}
+.result{min-height:44px;font-size:17px;font-weight:700;margin-top:8px}
+.result.win{color:var(--ok)}.result.lose{color:var(--err)}
+.pair{display:flex;gap:10px}
+.pair button{flex:1}
+.bar{height:14px;background:var(--bg);border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:8px}
+.fill{height:100%;background:var(--err);width:100%;transition:width .4s}
+.fill.me{background:var(--ok)}
+.hp{font-size:13px;color:var(--muted);margin-top:5px;text-align:left}
+.turn{font-size:14px;font-weight:700;color:var(--accent);margin-top:6px;min-height:20px}
+.log{font-size:13px;color:var(--muted);text-align:left;line-height:1.6;margin-top:12px;min-height:60px}
+.log div:first-child{color:var(--text);font-weight:600}
+select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:15px}
+select:focus{outline:2px solid var(--accent);border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{margin:0;padding:9px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:14px;color:var(--text)}
+.chips input{display:none}
+.chips label:has(input:checked){border-color:var(--accent);background:var(--accent2);color:var(--accent);font-weight:700}
+.tabs{overflow-x:auto}
+.tabs button{width:auto;flex:1 0 auto;white-space:nowrap;padding:10px 12px;font-size:14px}
+.ph{text-align:center;color:var(--muted);font-size:14px;padding:40px 10px;line-height:1.7}
+.ph b{display:block;color:var(--text);font-size:17px;margin-bottom:6px}
+.srow{padding:12px 0;border-bottom:1px solid var(--line)}
+.srow .l{display:flex;justify-content:space-between;align-items:baseline;font-size:15px}
+.srow .l > span:last-child{font-size:13px;color:var(--muted)}
+.obar{height:8px;background:var(--bg);border-radius:6px;overflow:hidden;margin-top:8px;border:1px solid var(--line)}
+.ofill{height:100%;background:var(--ok);transition:width .4s}
+.ofill.mid{background:#e6a23c}.ofill.hi{background:var(--err)}
+.warn{color:var(--err);font-weight:700;font-size:13px;margin-left:8px}
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10}
+.ov.hide{display:none}
+.pop{background:var(--card);border:2px solid var(--err);border-radius:16px;padding:26px 22px;max-width:340px;width:100%;text-align:center}
+.ptitle{color:var(--err);font-size:19px;font-weight:800;line-height:1.5}
+.hr div:nth-child(2){font-size:13px !important;color:var(--muted);margin:6px 0 !important}
+.hr div:nth-child(3){font-size:18px;font-weight:600}
+.req{padding:12px 0;border-bottom:1px solid var(--line)}
+.req .t{font-size:14px;margin-bottom:8px}
+.req .pair button{margin-top:0;padding:10px}
+details.ad{border-bottom:1px solid var(--line);padding:10px 0}
+details.ad summary{cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-size:15px}
+details.ad summary span:last-child{font-size:12px;color:var(--muted)}
+.stats{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:6px;font-size:14px;line-height:1.8}
+.stats .h{color:var(--muted);font-size:12px}
+.danger{color:var(--err)}
+.ctitle{font-size:18px;font-weight:800;margin-bottom:6px}
+.cinfo{color:var(--muted);font-size:13px;margin-bottom:8px;word-break:break-all}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- 로그인 -->
+  <section id="v-login">
+    <h1>코드 로그인</h1>
+    <p class="sub">발급받은 코드를 입력해 주세요.</p>
+    <label for="login-code">코드</label>
+    <input type="text" id="login-code" maxlength="8" autocomplete="off" placeholder="예: A1B2C3">
+    <div class="msg" id="login-msg"></div>
+    <button class="primary" id="btn-login">로그인</button>
+    <div class="divider">코드가 없나요?</div>
+    <button class="ghost" id="btn-issue">코드 발급 받기</button>
+  </section>
+
+  <!-- 코드 발급 -->
+  <section id="v-issue" class="hide">
+    <h1>코드 발급</h1>
+    <p class="sub">정보를 입력하고 저장하면 코드가 등록돼요.</p>
+    <label>코드</label>
+    <div class="code" id="new-code">------</div>
+    <label for="f-name">이름</label>
+    <input type="text" id="f-name" maxlength="20" placeholder="이름">
+    <label for="f-age">나이</label>
+    <input type="number" id="f-age" min="1" max="150" inputmode="numeric" placeholder="나이">
+    <label for="f-room">호수</label>
+    <input type="text" id="f-room" maxlength="10" placeholder="예: 101호">
+    <label for="f-grade">등급</label>
+    <select id="f-grade">
+      <option value="">등급 선택</option>
+      <option value="S">S</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+    </select>
+    <label>능력 선택</label>
+    <div class="seg">
+      <label><input type="radio" name="role" value="에스퍼" checked><span>에스퍼</span></label>
+      <label><input type="radio" name="role" value="가이드"><span>가이드</span></label>
+    </div>
+    <div id="ability-wrap">
+      <label for="f-ability">에스퍼 능력</label>
+      <input type="text" id="f-ability" maxlength="50" placeholder="에스퍼 능력">
+    </div>
+    <label for="f-pos">포지션</label>
+    <select id="f-pos">
+      <option value="">포지션 선택</option>
+      <option value="T">T</option><option value="M">M</option><option value="B">B</option>
+    </select>
+    <div class="msg" id="issue-msg"></div>
+    <button class="primary" id="btn-save">저장</button>
+    <button class="link" id="btn-back">← 로그인으로 돌아가기</button>
+  </section>
+
+  <!-- 메인 -->
+  <section id="v-main" class="hide">
+    <div class="top">
+      <div class="who"><b id="who-name"></b><br><span id="who-info"></span></div>
+      <button class="ghost" id="btn-logout">로그아웃</button>
+    </div>
+    <div class="tabs">
+      <button id="t-weather" class="on">날씨</button>
+      <button id="t-gate">게이트</button>
+      <button id="t-sentinel">센티넬 관리</button>
+      <button id="t-guiding">가이딩실</button>
+      <button id="t-admin" class="hide">관리</button>
+    </div>
+
+    <div id="p-weather">
+      <div class="big"><div class="ico" id="w-ico">☁️→☀️</div><div class="temp" id="w-temp">15° / 26°</div><div class="desc" id="w-desc">서울 · ☁️ 구름 많다가 오전부터 ☀️ 맑음</div></div>
+      <div class="hours" id="hours"></div>
+      <ul class="notes" id="w-notes">
+        <li>🌡️ 최저 15°C · 최고 26°C (낮 최고 23~27°C 예상)</li>
+        <li>💧 강수 없음 · 습도 51~98%</li>
+        <li>🌫️ 새벽~아침 안개 가능, 낮과 밤 기온차 10~15°C</li>
+        <li>🌧️ 내일은 중부 지방에 비, 모레부터 급격히 쌀쌀해져요</li>
+      </ul>
+      <div class="stale hide" id="stale">※ 이 날씨는 2026년 9월 29일 서울 기준 정보예요. 오늘 날씨와 다를 수 있어요.</div>
+    </div>
+
+    <div id="p-gate" class="gate hide">
+      <div class="grade" id="g-grade">?</div>
+      <div class="bar"><div class="fill" id="gate-fill"></div></div>
+      <div class="hp" id="gate-hp"></div>
+      <div class="dice" id="dice">-</div>
+      <div class="turn" id="turn"></div>
+      <div class="pair">
+        <button class="primary" id="btn-atk" disabled>공격</button>
+      </div>
+      <div class="bar"><div class="fill me" id="me-fill"></div></div>
+      <div class="hp" id="me-hp"></div>
+      <div class="hp">1 대실패(내 체력 -10) · 2~3 실패(내 체력 -5) · 4~5 성공(게이트 체력 -5) · 6 대성공(게이트 체력 -10)</div>
+      <div class="log" id="log"></div>
+    </div>
+    <div id="p-sentinel" class="hide">
+      <div id="slist"></div>
+      <div class="msg" id="s-msg"></div>
+      <button class="ghost" id="btn-srefresh">새로고침</button>
+    </div>
+    <div id="p-guiding" class="hide">
+      <label for="f-guide">가이드 선택</label>
+      <select id="f-guide"><option value="">가이드 선택</option></select>
+      <button class="primary hide" id="btn-getguide">가이드 받기</button>
+      <div class="msg" id="gd-msg"></div>
+      <div class="hp" id="gd-status"></div>
+      <div id="gd-inbox" class="hide">
+        <label>받은 가이딩 요청</label>
+        <div id="gd-list"></div>
+      </div>
+      <button class="ghost" id="btn-grefresh">새로고침</button>
+    </div>
+    <div id="p-admin" class="hide">
+      <div class="stats" id="ad-stats"></div>
+      <div id="ad-list"></div>
+      <div class="msg" id="ad-msg"></div>
+    </div>
+  </section>
+
+</div>
+<div class="ov hide" id="popup" role="alertdialog" aria-modal="true">
+  <div class="pop"><div class="ptitle">폭주 경고! 가이딩을 받으세요!</div><button class="primary" id="btn-pop">확인</button></div>
+</div>
+<div class="ov hide" id="confirm" role="alertdialog" aria-modal="true">
+  <div class="pop">
+    <div class="ctitle">정말 삭제하시겠습니까?</div>
+    <div class="cinfo" id="cf-info"></div>
+    <div class="pair"><button class="primary" id="btn-yes">예</button><button class="ghost" id="btn-no">아니오</button></div>
+  </div>
+</div>
+<script>
+(function(){
+  var SESSION = "esper-guide-session";
+  var ADMINS = ["U2G6NC"], myAdmin = false;
+  function isAdminCode(c){ return ADMINS.indexOf(c) >= 0; }
+  var CH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  var db = null, canWrite = true, busy = false;
+  function $(id){ return document.getElementById(id); }
+  function show(id){ ["v-login","v-issue","v-main"].forEach(function(v){ $(v).classList.toggle("hide", v !== id); }); }
+  function setMsg(el, t, ok){ el.textContent = t; el.className = "msg" + (ok ? " ok" : ""); }
+  function genCode(){ var c = ""; for(var i=0;i<6;i++) c += CH[Math.floor(Math.random()*CH.length)]; if(isAdminCode(c)) return genCode(); return c; }
+  function lsGet(){ try{ return localStorage.getItem(SESSION) || ""; }catch(e){ return ""; } }
+  function lsSet(v){ try{ localStorage.setItem(SESSION, v); }catch(e){} }
+
+  // ---- 공용 저장소 연결 ----
+  // ---- 외부 저장소: Firebase Realtime Database (REST) ----
+  // Firebase Realtime Database 주소 (다른 프로젝트를 쓰려면 이 주소만 바꾸면 돼요).
+  var FB_URL = "https://sgmember-c0725-default-rtdb.firebaseio.com";
+  function fbUrl(path){ return FB_URL.replace(/\/$/, "") + "/" + path + ".json"; }
+  async function fbGet(path){
+    var r = await fetch(fbUrl(path)); if(!r.ok) throw new Error("get " + r.status); return r.json();
+  }
+  function fbSend(method, path, body, headers){
+    var h = {"Content-Type":"application/json"}; for(var k in (headers || {})) h[k] = headers[k];
+    return fetch(fbUrl(path), {method:method, headers:h, body:JSON.stringify(body)});
+  }
+  function snap(id, v){ return {id:id, exists: v !== null && v !== undefined, data: function(){ return v === null ? undefined : v; }}; }
+  function makeQuery(path, filters){
+    return {
+      where: function(f, op, val){ return makeQuery(path, filters.concat([[f, op, val]])); },
+      get: async function(){
+        var all = (await fbGet(path)) || {}, docs = [];
+        Object.keys(all).forEach(function(id){
+          var x = all[id]; if(!x || typeof x !== "object") return;
+          if(filters.every(function(f){ return x[f[0]] === f[2]; })) docs.push(snap(id, x));
+        });
+        return {docs:docs, size:docs.length, empty:!docs.length};
+      }
+    };
+  }
+  function makeDb(){
+    return {
+      doc: function(path){
+        return {
+          get: async function(){ return snap(path.split("/").pop(), await fbGet(path)); },
+          set: async function(data){ var r = await fbSend("PUT", path, data); if(!r.ok) throw new Error("set " + r.status); },
+          update: async function(data){ var r = await fbSend("PATCH", path, data); if(!r.ok) throw new Error("update " + r.status); },
+          delete: async function(){ var r = await fbSend("DELETE", path); if(!r.ok) throw new Error("delete " + r.status); },
+          // 같은 코드가 없을 때만 저장 (이미 있으면 false) -> 코드 중복 방지
+          create: async function(data){
+            try{
+              var r = await fbSend("PUT", path, data, {"If-Match":"null_etag"});
+              if(r.status === 412) return false;
+              if(r.ok) return true;
+              if(r.status === 401 || r.status === 403) throw new Error("denied");
+            }catch(e){ if(e && e.message === "denied") throw e; }
+            if((await fbGet(path)) !== null) return false;
+            await fbSend("PUT", path, data);
+            var v = await fbGet(path);
+            return !!v && v.nonce === data.nonce;
+          }
+        };
+      },
+      collection: function(path){ return makeQuery(path, []); }
+    };
+  }
+  async function init(){
+    if(FB_URL.indexOf("YOUR-PROJECT") >= 0){
+      setMsg($("login-msg"), "저장소 주소(FB_URL)가 설정되지 않았어요. index.html 안의 FB_URL을 확인해 주세요.");
+      $("btn-login").disabled = true; $("btn-issue").disabled = true; return;
+    }
+    db = makeDb();
+    var s = lsGet();
+    if(s){ var ok = await enter(s, true); if(ok) return; }
+  }
+
+  // ---- 로그인 ----
+  async function login(){
+    var code = $("login-code").value.trim().toUpperCase();
+    if(!code){ setMsg($("login-msg"), "코드를 입력해 주세요."); return; }
+    if(!/^[A-Z0-9]{4,8}$/.test(code)){ setMsg($("login-msg"), "코드 형식이 올바르지 않아요."); return; }
+    setMsg($("login-msg"), "확인 중...", true);
+    if(isAdminCode(code)){
+      try{
+        var sn = await db.doc("codes/" + code).get(), dd = sn.exists ? sn.data() : null;
+        if(!dd || !dd.name || dd.role === "관리자"){ openIssue(code); return; }
+      }catch(e){}
+    }
+    var ok = await enter(code, false);
+    if(!ok) setMsg($("login-msg"), "등록되지 않은 코드예요.");
+  }
+  async function enter(code, silent){
+    try{
+      var snap = await db.doc("codes/" + code).get();
+      var d = snap.exists ? snap.data() : null;
+      if(!d || !d.name || d.role === "관리자") return false;
+      lsSet(code);
+      myGrade = HPS[d.grade] ? d.grade : "D"; myRole = d.role; myName = d.name; myAdmin = isAdminCode(code);
+      $("t-admin").classList.toggle("hide", !myAdmin); myCode = code;
+      $("btn-getguide").classList.toggle("hide", myRole !== "에스퍼");
+      $("gd-inbox").classList.toggle("hide", myRole !== "가이드"); myOverload = Number(d.overload) || 0;
+      $("who-name").textContent = d.name + "님";
+      $("who-info").textContent = (d.grade ? d.grade + "등급 · " : "") + d.role + " · " + d.age + "세" + (d.room ? " · " + d.room : "") + " · " + code + (d.position ? " · " + d.position : "") + (d.role === "에스퍼" && d.ability ? " · " + d.ability : "");
+      setMsg($("login-msg"), "");
+      show("v-main"); tab("weather");
+      if(myOverload >= 80) $("popup").classList.remove("hide");
+      return true;
+    }catch(e){
+      if(!silent) setMsg($("login-msg"), "저장소를 읽지 못했어요. 잠시 후 다시 시도해 주세요.");
+      return false;
+    }
+  }
+
+  // ---- 코드 발급 (중복 방지) ----
+  function role(){ return document.querySelector("input[name=role]:checked").value; }
+  function toggleAbility(){ $("ability-wrap").classList.toggle("hide", role() !== "에스퍼"); }
+  function openIssue(fixed){
+    $("new-code").textContent = fixed || genCode();
+    $("f-name").value = ""; $("f-age").value = ""; $("f-grade").value = "";
+    $("f-ability").value = ""; $("f-room").value = ""; $("f-pos").value = "";
+    document.querySelector('input[name=role][value="에스퍼"]').checked = true;
+    toggleAbility();
+    setMsg($("issue-msg"), canWrite ? (fixed ? "관리자 코드예요. 정보를 등록하면 이 코드로 로그인돼요." : "") : "코드 발급은 편집 권한이 있는 계정만 할 수 있어요.");
+    $("btn-save").disabled = !canWrite;
+    show("v-issue");
+  }
+  // 코드 문서를 임대(lease)로 잠근 뒤, 비어 있을 때만 기록 → 같은 코드가 두 번 발급되지 않음
+  async function claim(rec, preferred){
+    var nonce = "n" + Math.random().toString(36).slice(2) + Date.now();
+    for(var i=0;i<12;i++){
+      var code = (i === 0 && preferred) ? preferred : genCode();
+      rec.code = code; rec.nonce = nonce;
+      if(await db.doc("codes/" + code).create(rec)) return code;
+    }
+    throw new Error("no-code");
+  }
+  async function saveUser(){
+    if(busy) return;
+    var msg = $("issue-msg"), name = $("f-name").value.trim(), age = parseInt($("f-age").value, 10),
+        r = role(), ability = $("f-ability").value.trim(), grade = $("f-grade").value,
+        room = $("f-room").value.trim(), pos = $("f-pos").value;
+    if(!name){ setMsg(msg, "이름을 입력해 주세요."); return; }
+    if(!age || age < 1 || age > 150){ setMsg(msg, "나이를 올바르게 입력해 주세요."); return; }
+    if(!room){ setMsg(msg, "호수를 입력해 주세요."); return; }
+    if(!grade){ setMsg(msg, "등급을 선택해 주세요."); return; }
+    if(r === "에스퍼" && !ability){ setMsg(msg, "에스퍼 능력을 입력해 주세요."); return; }
+    if(!pos){ setMsg(msg, "포지션을 선택해 주세요."); return; }
+    busy = true; $("btn-save").disabled = true; setMsg(msg, "저장 중...", true);
+    try{
+      var rec = {name:name, age:age, grade:grade, room:room, position:pos, role:r, ability: r === "에스퍼" ? ability : "", createdAt: Date.now()}, pre = $("new-code").textContent, code;
+      if(isAdminCode(pre)){ rec.code = pre; await db.doc("codes/" + pre).set(rec); code = pre; }
+      else code = await claim(rec, pre);
+      $("login-code").value = code;
+      setMsg($("login-msg"), "저장됐어요! 발급된 코드: " + code + " (꼭 기억해 주세요)", true);
+      show("v-login");
+    }catch(e){
+      if(e && e.code === "invalid_argument") setMsg(msg, "저장 권한이 없어요. 편집 권한이 있는 계정으로 열어 주세요.");
+      else if(e && e.code === "quota_exceeded") setMsg(msg, "저장 공간이 가득 찼어요.");
+      else setMsg(msg, "저장하지 못했어요. 잠시 후 다시 시도해 주세요.");
+    }
+    busy = false; $("btn-save").disabled = !canWrite;
+  }
+
+  // ---- 탭 ----
+  async function loadSentinels(){
+    var box = $("slist"), msg = $("s-msg");
+    setMsg(msg, "불러오는 중...", true);
+    try{
+      var qs = await db.collection("codes").where("role", "==", "에스퍼").get();
+      var arr = qs.docs.map(function(d){ return d.data(); }).sort(function(a, b){ return String(a.name).localeCompare(String(b.name), "ko"); });
+      box.textContent = "";
+      arr.forEach(function(u){
+        var ov = Math.max(0, Math.min(100, Number(u.overload) || 0));
+        var row = document.createElement("div"); row.className = "srow";
+        var l = document.createElement("div"); l.className = "l";
+        var a = document.createElement("span"); a.textContent = u.name;
+        var b = document.createElement("span"); b.textContent = "과부하 " + ov + "%";
+        var nm = document.createElement("span"); nm.appendChild(a);
+        if(ov >= 80){ var w = document.createElement("span"); w.className = "warn"; w.textContent = "폭주 경고"; nm.appendChild(w); }
+        l.appendChild(nm); l.appendChild(b);
+        var bar = document.createElement("div"); bar.className = "obar";
+        var f = document.createElement("div"); f.className = "ofill" + (ov >= 80 ? " hi" : ov >= 50 ? " mid" : ""); f.style.width = ov + "%";
+        bar.appendChild(f); row.appendChild(l); row.appendChild(bar); box.appendChild(row);
+      });
+      setMsg(msg, arr.length ? "" : "등록된 센티넬이 없어요.");
+    }catch(e){ setMsg(msg, "목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요."); }
+  }
+  async function loadGuides(){
+    var sel = $("f-guide"), prev = sel.value, msg = $("gd-msg");
+    try{
+      var qs = await db.collection("codes").where("role", "==", "가이드").get();
+      var arr = qs.docs.map(function(d){ var x = d.data(); return {code:d.id, name:x.name}; })
+        .sort(function(a, b){ return String(a.name).localeCompare(String(b.name), "ko"); });
+      sel.textContent = "";
+      var o0 = document.createElement("option"); o0.value = ""; o0.textContent = "가이드 선택"; sel.appendChild(o0);
+      arr.forEach(function(g){ var o = document.createElement("option"); o.value = g.code; o.textContent = g.name; sel.appendChild(o); });
+      if(prev) sel.value = prev;
+      setMsg(msg, arr.length ? "" : "등록된 가이드가 없어요.");
+    }catch(e){ setMsg(msg, "가이드 목록을 불러오지 못했어요."); }
+  }
+  var STLAB = {pending:"대기 중", accepted:"수락됨", declined:"거절됨"};
+  async function loadGuiding(){
+    await loadGuides();
+    if(myRole === "에스퍼") loadMyRequest();
+    if(myRole === "가이드") loadInbox();
+  }
+  async function requestGuide(){
+    var sel = $("f-guide"), msg = $("gd-msg");
+    if(!sel.value){ setMsg(msg, "가이드를 선택해 주세요."); return; }
+    var name = sel.options[sel.selectedIndex].textContent;
+    setMsg(msg, "요청 중...", true);
+    try{
+      await db.doc("guiding/" + myCode).set({from:myCode, fromName:myName, to:sel.value, toName:name, status:"pending", createdAt:Date.now()});
+      setMsg(msg, name + " 가이드에게 가이딩을 요청했어요.", true);
+      loadMyRequest();
+    }catch(e){ setMsg(msg, "요청하지 못했어요. 잠시 후 다시 시도해 주세요."); }
+  }
+  async function loadMyRequest(){
+    try{
+      var snap = await db.doc("guiding/" + myCode).get(), d = snap.exists ? snap.data() : null;
+      $("gd-status").textContent = d ? "내 요청: " + d.toName + " 가이드 - " + (STLAB[d.status] || d.status) : "";
+    }catch(e){}
+  }
+  async function loadInbox(){
+    var box = $("gd-list");
+    try{
+      var qs = await db.collection("guiding").where("to", "==", myCode).where("status", "==", "pending").get();
+      box.textContent = "";
+      if(qs.empty){ var n = document.createElement("div"); n.className = "hp"; n.textContent = "받은 요청이 없어요."; box.appendChild(n); return; }
+      qs.docs.forEach(function(d){
+        var x = d.data(), id = d.id;
+        var row = document.createElement("div"); row.className = "req";
+        var t = document.createElement("div"); t.className = "t"; t.textContent = x.fromName + " 님이 가이딩을 요청했어요";
+        var pr = document.createElement("div"); pr.className = "pair";
+        var ok = document.createElement("button"); ok.className = "primary"; ok.textContent = "가이딩 해주기";
+        var no = document.createElement("button"); no.className = "ghost"; no.textContent = "거절";
+        ok.onclick = function(){ respond(id, "accepted"); };
+        no.onclick = function(){ respond(id, "declined"); };
+        pr.appendChild(ok); pr.appendChild(no); row.appendChild(t); row.appendChild(pr); box.appendChild(row);
+      });
+    }catch(e){ setMsg($("gd-msg"), "요청 목록을 불러오지 못했어요."); }
+  }
+  async function respond(id, st){
+    try{
+      await db.doc("guiding/" + id).update({status:st, respondedAt:Date.now()});
+      setMsg($("gd-msg"), st === "accepted" ? "가이딩을 수락했어요." : "요청을 거절했어요.", true);
+    }catch(e){ setMsg($("gd-msg"), "처리하지 못했어요. 잠시 후 다시 시도해 주세요."); }
+    loadInbox();
+  }
+  function fld(form, label, el){ var lb = document.createElement("label"); lb.textContent = label; form.appendChild(lb); form.appendChild(el); return el; }
+  function inp(type, val){ var i = document.createElement("input"); i.type = type; i.value = val == null ? "" : val; return i; }
+  function sel(opts, val){
+    var o = opts.slice(); if(val && o.indexOf(val) < 0) o.push(val);
+    var e = document.createElement("select"), b = document.createElement("option"); b.value = ""; b.textContent = "선택 안 함"; e.appendChild(b);
+    o.forEach(function(v){ var x = document.createElement("option"); x.value = v; x.textContent = v; e.appendChild(x); });
+    e.value = val || ""; return e;
+  }
+  function adminRow(id, x){
+    var det = document.createElement("details"); det.className = "ad";
+    var sm = document.createElement("summary"), s1 = document.createElement("span"), s2 = document.createElement("span");
+    s1.textContent = x.name; s2.textContent = id + " · " + (x.role || ""); sm.appendChild(s1); sm.appendChild(s2); det.appendChild(sm);
+    var form = document.createElement("div");
+    var fName = fld(form, "이름", inp("text", x.name)), fAge = fld(form, "나이", inp("number", x.age)),
+        fRoom = fld(form, "호수", inp("text", x.room)), fGrade = fld(form, "등급", sel(["S","A","B","C","D"], x.grade)),
+        fRole = fld(form, "능력 선택", sel(["에스퍼","가이드"], x.role)), fAb = fld(form, "에스퍼 능력", inp("text", x.ability)),
+        fPos = fld(form, "포지션", sel(["T","M","B"], x.position)), fOv = fld(form, "과부하 (%)", inp("number", x.overload || 0));
+    var btn = document.createElement("button"); btn.className = "primary"; btn.textContent = "저장";
+    var m = document.createElement("div"); m.className = "msg";
+    btn.onclick = async function(){
+      var name = fName.value.trim(), age = parseInt(fAge.value, 10);
+      if(!name){ setMsg(m, "이름을 입력해 주세요."); return; }
+      if(isNaN(age) || age < 0){ setMsg(m, "나이를 올바르게 입력해 주세요."); return; }
+      var ov = Math.max(0, Math.min(100, parseInt(fOv.value, 10) || 0));
+      btn.disabled = true; setMsg(m, "저장 중...", true);
+      try{
+        await db.doc("codes/" + id).update({name:name, age:age, room:fRoom.value.trim(), grade:fGrade.value, role:fRole.value, ability:fAb.value.trim(), position:fPos.value, overload:ov});
+        s1.textContent = name; s2.textContent = id + " · " + fRole.value; fOv.value = ov;
+        setMsg(m, "저장됐어요.", true);
+      }catch(e){ setMsg(m, "저장하지 못했어요. 잠시 후 다시 시도해 주세요."); }
+      btn.disabled = false;
+    };
+    form.appendChild(btn);
+    if(id !== myCode){
+      var del = document.createElement("button"); del.className = "ghost danger"; del.textContent = "삭제";
+      del.onclick = function(){ askDelete(id, fName.value.trim() || x.name); };
+      form.appendChild(del);
+    }
+    form.appendChild(m); det.appendChild(form);
+    return det;
+  }
+  function pct(n, t){ return t ? Math.round(100*n/t) + "%" : "-"; }
+  function renderStats(list){
+    var e = 0, g = 0, T = 0, M = 0, B = 0, none = 0;
+    list.forEach(function(x){
+      if(x.role === "에스퍼") e++; else if(x.role === "가이드") g++;
+      if(x.position === "T") T++; else if(x.position === "M") M++; else if(x.position === "B") B++; else none++;
+    });
+    var rt = e + g, pt = T + M + B, box = $("ad-stats"); box.textContent = "";
+    var lines = [
+      ["구성 비율", ""],
+      ["에스퍼 : 가이드 = " + e + " : " + g, "(" + pct(e, rt) + " : " + pct(g, rt) + ")"],
+      ["T : M : B = " + T + " : " + M + " : " + B, "(" + pct(T, pt) + " : " + pct(M, pt) + " : " + pct(B, pt) + ")" + (none ? " · 포지션 미지정 " + none + "명" : "")]
+    ];
+    lines.forEach(function(l, i){
+      var d = document.createElement("div"); if(i === 0) d.className = "h";
+      d.textContent = l[0] + (l[1] ? "  " + l[1] : ""); box.appendChild(d);
+    });
+  }
+  var delId = "";
+  function askDelete(id, name){ delId = id; $("cf-info").textContent = name + " (" + id + ")"; $("confirm").classList.remove("hide"); }
+  async function doDelete(){
+    var id = delId; if(!id) return;
+    delId = ""; $("confirm").classList.add("hide");
+    setMsg($("ad-msg"), "삭제 중...", true);
+    try{
+      await db.doc("codes/" + id).delete();
+      try{ await db.doc("guiding/" + id).delete(); }catch(e){}
+      await loadAdmin();
+      setMsg($("ad-msg"), "계정을 삭제했어요.", true);
+    }catch(e){ setMsg($("ad-msg"), "삭제하지 못했어요. 저장소 권한을 확인해 주세요."); }
+  }
+  async function loadAdmin(){
+    if(!myAdmin) return;
+    var box = $("ad-list"), msg = $("ad-msg");
+    setMsg(msg, "불러오는 중...", true);
+    try{
+      var qs = await db.collection("codes").get();
+      var arr = qs.docs.map(function(d){ return {id:d.id, x:d.data()}; })
+        .filter(function(o){ return o.x && o.x.name && o.x.role !== "관리자"; })
+        .sort(function(a, b){ return String(a.x.name).localeCompare(String(b.x.name), "ko"); });
+      box.textContent = "";
+      arr.forEach(function(o){ box.appendChild(adminRow(o.id, o.x)); });
+      renderStats(arr.map(function(o){ return o.x; }));
+      setMsg(msg, arr.length ? "총 " + arr.length + "명" : "등록된 계정이 없어요.", true);
+    }catch(e){ setMsg(msg, "목록을 불러오지 못했어요. 잠시 후 다시 시도해 주세요."); }
+  }
+  var TABS = ["weather","gate","sentinel","guiding","admin"];
+  function tab(n){
+    if(n === "admin" && !myAdmin) return;
+    TABS.forEach(function(t){
+      $("t-" + t).classList.toggle("on", t === n);
+      $("p-" + t).classList.toggle("hide", t !== n);
+    });
+    if(n === "gate" && (!cur || over)) newGate();
+    if(n === "sentinel") loadSentinels();
+    if(n === "guiding") loadGuiding();
+    if(n === "admin") loadAdmin();
+  }
+
+  var HOURS = [["03시","☁️ 흐림",16],["06시","☁️ 흐림",15],["09시","⛅ 구름 조금",19],["12시","☀️ 맑음",24],["15시","☀️ 맑음",26],["18시","⛅ 구름 조금",23],["21시","🌙 맑음",20],["24시","🌙 맑음",18]];
+  // ---- 날씨 (Open-Meteo 예보, 서울 / 매일 자정(KST) 기준 당일 날씨로 갱신) ----
+  var SNAP_DATE = "2026-09-29";
+  function kstDate(){ try{ return new Date().toLocaleDateString("sv-SE", {timeZone:"Asia/Seoul"}); }catch(e){ return ""; } }
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function wx(c, hr){
+    var night = hr < 6 || hr >= 19;
+    if(c === 0) return night ? ["🌙","맑음"] : ["☀️","맑음"];
+    if(c === 1) return night ? ["🌙","대체로 맑음"] : ["🌤️","대체로 맑음"];
+    if(c === 2) return ["⛅","구름 조금"];
+    if(c === 3) return ["☁️","흐림"];
+    if(c === 45 || c === 48) return ["🌫️","안개"];
+    if(c >= 51 && c <= 57) return ["🌦️","이슬비"];
+    if(c >= 61 && c <= 67) return ["🌧️","비"];
+    if(c >= 71 && c <= 77) return ["❄️","눈"];
+    if(c >= 80 && c <= 82) return ["🌦️","소나기"];
+    if(c === 85 || c === 86) return ["🌨️","눈 소나기"];
+    if(c >= 95) return ["⛈️","뇌우"];
+    return ["🌡️","-"];
+  }
+  function drawHours(list){
+    var box = $("hours"); box.textContent = "";
+    list.forEach(function(h){
+      var d = document.createElement("div"); d.className = "hr";
+      [h[0], h[1], h[2] + "°"].forEach(function(t){ var x = document.createElement("div"); x.textContent = t; d.appendChild(x); });
+      box.appendChild(d);
+    });
+  }
+  function setNotes(lines){
+    var ul = $("w-notes"); ul.textContent = "";
+    lines.forEach(function(t){ var li = document.createElement("li"); li.textContent = t; ul.appendChild(li); });
+  }
+  function renderWeather(j){
+    var h = j.hourly, d = j.daily, list = [], hum = [], i;
+    for(i = 0; i < 24; i += 3){ var w = wx(h.weather_code[i], i); list.push([pad(i) + "시", w[0] + " " + w[1], Math.round(h.temperature_2m[i])]); }
+    for(i = 0; i < 24; i++) hum.push(h.relative_humidity_2m[i]);
+    var mn = Math.round(d.temperature_2m_min[0]), mx = Math.round(d.temperature_2m_max[0]), pr = d.precipitation_sum[0] || 0;
+    var noon = wx(h.weather_code[12], 12);
+    $("w-ico").textContent = noon[0];
+    $("w-temp").textContent = mn + "° / " + mx + "°";
+    $("w-desc").textContent = "서울 · " + noon[0] + " " + noon[1] + (pr > 0 ? " · 🌧️ 강수 " + pr + "mm" : "");
+    drawHours(list);
+    setNotes([
+      "🌡️ 최저 " + mn + "°C · 최고 " + mx + "°C",
+      (pr > 0 ? "🌧️ 강수량 " + pr + "mm" : "💧 강수 없음") + " · 습도 " + Math.min.apply(null, hum) + "~" + Math.max.apply(null, hum) + "%",
+      "📈 낮과 밤 기온차 " + (mx - mn) + "°C"
+    ]);
+  }
+  var wDate = "";
+  async function loadWeather(){
+    try{
+      var r = await fetch("https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&hourly=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Asia%2FSeoul&forecast_days=1");
+      if(!r.ok) throw new Error("weather " + r.status);
+      var j = await r.json(); renderWeather(j);
+      wDate = j.daily.time[0]; $("stale").classList.add("hide");
+    }catch(e){
+      $("stale").classList.toggle("hide", kstDate() === SNAP_DATE);
+    }
+  }
+  function msToMidnight(){
+    var n = new Date(), kst = new Date(n.toLocaleString("en-US", {timeZone:"Asia/Seoul"})), nx = new Date(kst.getTime());
+    nx.setHours(24, 0, 10, 0); return nx.getTime() - kst.getTime();
+  }
+  function scheduleWeather(){ setTimeout(function(){ loadWeather(); scheduleWeather(); }, msToMidnight()); }
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden && wDate && wDate !== kstDate()) loadWeather(); });
+  (function(){
+    drawHours(HOURS);
+    if(kstDate() !== SNAP_DATE) $("stale").classList.remove("hide");
+  })();
+
+  // ---- 게이트 (주사위 판정) ----
+  var GHP = {S:40,A:35,B:30,C:25,D:20}, LET = ["S","A","B","C","D"];
+  var SIDES = 6, HPS = {S:30,A:25,B:20,C:15,D:10}, myGrade = "D", pMax = 10;
+  // 주사위 눈 → 결과 (me: 내 체력 감소, gate: 게이트 체력 감소)
+  var RULE = {1:{n:"대실패",me:10,gate:0}, 2:{n:"실패",me:5,gate:0}, 3:{n:"실패",me:5,gate:0}, 4:{n:"성공",me:0,gate:5}, 5:{n:"성공",me:0,gate:5}, 6:{n:"대성공",me:0,gate:10}};
+  var cur = null, gHp = 0, pHp = 0, over = false, myRole = "", myName = "", myCode = "", myOverload = 0, writeQ = Promise.resolve();
+  function roll(){ return 1 + Math.floor(Math.random()*SIDES); }
+  function log(t){ var l = $("log"), d = document.createElement("div"); d.textContent = t; l.insertBefore(d, l.firstChild); while(l.children.length > 6) l.removeChild(l.lastChild); }
+  function setTurn(t){ $("turn").textContent = t; }
+  function enable(b){ $("btn-atk").disabled = !b || myRole !== "에스퍼"; }
+  function render(){
+    $("gate-fill").style.width = (100*gHp/GHP[cur]) + "%";
+    $("me-fill").style.width = (100*pHp/pMax) + "%";
+    $("gate-hp").textContent = "게이트 체력 " + gHp + " / " + GHP[cur];
+    $("me-hp").textContent = "내 체력 (" + myGrade + "등급) " + pHp + " / " + pMax;
+  }
+  function newGate(){
+    cur = LET[Math.floor(Math.random()*LET.length)];
+    gHp = GHP[cur]; pMax = HPS[myGrade] || 10; pHp = pMax; over = false;
+    $("g-grade").textContent = cur + "등급"; $("dice").textContent = "-"; $("log").textContent = "";
+    log(cur + "등급 게이트가 열렸다! 공격 버튼으로 주사위를 굴리세요.");
+    render(); setTurn(myRole === "에스퍼" ? "공격하세요" : "공격은 에스퍼만 할 수 있어요"); enable(true);
+  }
+  function spin(cb){
+    var n = 0, t = setInterval(function(){
+      $("dice").textContent = roll();
+      if(++n >= 9){ clearInterval(t); var v = roll(); $("dice").textContent = v; setTimeout(function(){ cb(v); }, 350); }
+    }, 70);
+  }
+  function check(){
+    if(gHp <= 0){ over = true; setTurn("게이트 클리어! (탭을 다시 열면 새 게이트가 나와요)"); enable(false); return true; }
+    if(pHp <= 0){ over = true; setTurn("쓰러졌다... 패배 (탭을 다시 열면 새 게이트가 나와요)"); enable(false); return true; }
+    return false;
+  }
+  function playerAct(){
+    if(over || !cur || myRole !== "에스퍼") return;
+    enable(false); setTurn("주사위를 굴리는 중...");
+    spin(function(v){
+      var r = RULE[v];
+      if(r.gate) gHp = Math.max(0, gHp - r.gate);
+      if(r.me) pHp = Math.max(0, pHp - r.me);
+      var ov = Math.min(100, myOverload + 2); myOverload = ov;
+      writeQ = writeQ.then(function(){ return db.doc("codes/" + myCode).update({overload: ov}); }).catch(function(){});
+      log("" + v + " — " + r.n + (r.gate ? " · 게이트 체력 -" + r.gate : " · 내 체력 -" + r.me) + " · 과부하 " + ov + "%");
+      render();
+      if(check()) return;
+      setTurn(r.n + "! 다시 공격하세요"); enable(true);
+    });
+  }
+
+  $("btn-login").onclick = login;
+  $("login-code").addEventListener("keydown", function(e){ if(e.key === "Enter") login(); });
+  $("btn-issue").onclick = function(){ openIssue(); };
+  $("btn-back").onclick = function(){ show("v-login"); };
+  $("btn-save").onclick = saveUser;
+  $("btn-logout").onclick = function(){ lsSet(""); $("login-code").value = ""; setMsg($("login-msg"), ""); cur = null; $("g-grade").textContent = "?"; show("v-login"); };
+  $("t-weather").onclick = function(){ tab("weather"); };
+  $("t-gate").onclick = function(){ tab("gate"); };
+  $("t-sentinel").onclick = function(){ tab("sentinel"); };
+  $("btn-srefresh").onclick = loadSentinels;
+  $("btn-getguide").onclick = requestGuide;
+  $("btn-grefresh").onclick = loadGuiding;
+  $("btn-yes").onclick = doDelete;
+  $("btn-no").onclick = function(){ delId = ""; $("confirm").classList.add("hide"); };
+  $("btn-pop").onclick = function(){ $("popup").classList.add("hide"); };
+  $("t-admin").onclick = function(){ tab("admin"); };
+  $("t-guiding").onclick = function(){ tab("guiding"); };
+  $("btn-atk").onclick = function(){ playerAct(); };
+  document.querySelectorAll("input[name=role]").forEach(function(el){ el.addEventListener("change", toggleAbility); });
+
+  loadWeather(); scheduleWeather();
+  init();
+})();
+</script>
+</body>
+</html>
